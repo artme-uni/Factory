@@ -1,9 +1,8 @@
 package ru.nsu.g.akononov.factory;
 
-import ru.nsu.g.akononov.factory.factory.Manager;
-import ru.nsu.g.akononov.factory.factory.Storage;
-import ru.nsu.g.akononov.factory.factory.Suppliers;
+import ru.nsu.g.akononov.factory.factory.*;
 import ru.nsu.g.akononov.factory.threadPool.ThreadPool;
+import ru.nsu.g.akononov.factory.view.UI;
 
 import java.io.File;
 import java.io.FileReader;
@@ -13,7 +12,7 @@ import java.util.Properties;
 public class Main {
     public static void main(String[] args) {
 
-        File file = new File("src/ru/nsu/g/akononov/factory/data.properties");
+        File file = new File("src/resources/data.properties");
         Properties initValues = new Properties();
         try {
             initValues.load(new FileReader(file));
@@ -27,11 +26,19 @@ public class Main {
         int carsStorageCapacity = Integer.parseInt(initValues.getProperty("CarsStorageCapacity"));
         int accessoriesSuppliersCount = Integer.parseInt(initValues.getProperty("SuppliersCount"));
         int workersCount = Integer.parseInt(initValues.getProperty("WorkersCount"));
+        int dealersCount = Integer.parseInt(initValues.getProperty("DealersCount"));
 
 
         Storage storage = new Storage(bodiesStorageCapacity, engineStorageCapacity, accessoriesStorageCapacity, carsStorageCapacity);
         Suppliers suppliers = new Suppliers(storage, accessoriesSuppliersCount);
         ThreadPool workers = new ThreadPool(workersCount);
-        Manager manager = new Manager(workers, storage);
+
+        UI ui = new UI(storage);
+        Manager manager = new Manager(workers, storage, ui);
+        Dealers dealers = new Dealers(dealersCount, storage.getCarsStorage());
+
+
+        dealers.registerObserver(ui);
+        suppliers.registerObserver(ui);
     }
 }

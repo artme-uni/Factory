@@ -1,4 +1,6 @@
-package ru.nsu.g.akononov.factory.car;
+package ru.nsu.g.akononov.factory.factory.car;
+
+import ru.nsu.g.akononov.factory.factory.observable.operation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +22,17 @@ abstract public class Detail {
     @Override
     public String toString() {
         return getClass().getSimpleName() + ":" + serialNumber;
+    }
+
+    public operation getOperation(){
+        switch (getClass().getSimpleName())
+        {
+            case "Body" : return operation.bodiesCount;
+            case "Accessory" : return operation.accessoriesCount;
+            case "Engine" : return operation.enginesCount;
+        }
+
+        return null;
     }
 }
 

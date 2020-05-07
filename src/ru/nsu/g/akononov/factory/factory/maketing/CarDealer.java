@@ -1,20 +1,25 @@
-package ru.nsu.g.akononov.factory.factory;
+package ru.nsu.g.akononov.factory.factory.maketing;
 
-import ru.nsu.g.akononov.factory.car.Detail;
+import ru.nsu.g.akononov.factory.factory.car.Car;
+import ru.nsu.g.akononov.factory.factory.observable.Observable;
+import ru.nsu.g.akononov.factory.factory.observable.operation;
 
 import java.util.LinkedList;
-import java.util.function.Supplier;
+import java.util.logging.Logger;
 
-public class DetailSupplier<T extends Detail> {
+public class CarDealer extends Observable {
 
     private final Thread thread;
+    private final Logger logger;
+    private static int soldCarsCount;
 
-    public DetailSupplier(int capacity, LinkedList<T> storage, Supplier<T> supplier) {
+    public CarDealer(LinkedList<Car> storage, Logger logger) {
+        this.logger = logger;
 
         this.thread = new Thread(() -> {
             while (true) {
                 synchronized (storage) {
-                    while (storage.size() == capacity) {
+                    while (storage.isEmpty()) {
                         try {
                             storage.wait();
                         } catch (InterruptedException e) {
@@ -22,9 +27,13 @@ public class DetailSupplier<T extends Detail> {
                         }
                     }
 
-                    T detail = supplier.get();
-                    storage.add(detail);
-                    System.out.println("\t" + detail + "\t\t" + storage.size() + "\\" + capacity);
+                    Car car = storage.poll();
+
+                    notifyObserver(operation.carsCount, storage.size(), 0);
+                    soldCarsCount++;
+                    notifyObserver(operation.soldCarsCount, soldCarsCount, 0);
+
+                    logger.info(car.toString());
                     storage.notify();
                 }
 
@@ -35,6 +44,8 @@ public class DetailSupplier<T extends Detail> {
                 }
             }
         });
+
+        start();
     }
 
     public void start() {

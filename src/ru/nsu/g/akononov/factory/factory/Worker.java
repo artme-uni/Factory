@@ -1,32 +1,35 @@
 package ru.nsu.g.akononov.factory.factory;
 
-import ru.nsu.g.akononov.factory.car.*;
+import ru.nsu.g.akononov.factory.factory.car.*;
+import ru.nsu.g.akononov.factory.factory.observable.Observable;
+import ru.nsu.g.akononov.factory.factory.observable.Observer;
+import ru.nsu.g.akononov.factory.factory.observable.operation;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
-public class Worker {
+public class Worker extends Observable {
 
     private final Storage storage;
+    private final int orderedNumber;
 
-    Worker (Storage storage)
+    Worker (Storage storage, Observer observer, int orderedNumber)
     {
+        this.orderedNumber = orderedNumber;
         this.storage = storage;
+        registerObserver(observer);
     }
 
     public Car makeCar()
     {
+        notifyObserver(operation.workersStatus, 1, orderedNumber);
+
         Engine engine = (Engine) consumeDetail(storage.getEnginesStorage());
         Accessory accessory = (Accessory) consumeDetail(storage.getAccessoriesStorage());
         Body body = (Body) consumeDetail(storage.getBodiesStorage());
 
         Car car = new Car(body, engine, accessory);
-        System.out.println(car);
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        notifyObserver(operation.workersStatus, 0, orderedNumber);
 
         return car;
     }
@@ -43,9 +46,9 @@ public class Worker {
                     e.printStackTrace();
                 }
             }
-            detail = storage.poll();
-            System.out.println("-\t" + detail);
+            detail = storage.pollLast();
             storage.notify();
+            notifyObserver(detail.getOperation(), storage.size(), 0);
         }
 
         return detail;

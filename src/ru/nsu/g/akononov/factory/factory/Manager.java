@@ -1,17 +1,22 @@
 package ru.nsu.g.akononov.factory.factory;
 
+import ru.nsu.g.akononov.factory.factory.observable.Observable;
+import ru.nsu.g.akononov.factory.factory.observable.Observer;
+import ru.nsu.g.akononov.factory.factory.observable.operation;
 import ru.nsu.g.akononov.factory.threadPool.ThreadPool;
 
-public class Manager {
+public class Manager extends Observable {
 
     private final Thread thread;
 
-    public Manager(ThreadPool workers, Storage storage) {
+    public Manager(ThreadPool workers, Storage storage, Observer ui){
+        registerObserver(ui);
 
         this.thread = new Thread(() -> {
             while (true) {
                 synchronized (storage.getCarsStorage()) {
-                    while (storage.getCarsStorage().size() == storage.getCarsStorageCapacity()) {
+
+                    while (storage.getCarsStorage().size() + workers.getTaskCount() >= storage.getCarsStorageCapacity()) {
                         try {
                             storage.getCarsStorage().wait();
                         } catch (InterruptedException e) {
@@ -19,21 +24,19 @@ public class Manager {
                         }
                     }
 
-                    workers.execute(() -> {
-                        synchronized (storage.getCarsStorage()) {
-                            Worker worker = new Worker(storage);
-                            storage.getCarsStorage().add(worker.makeCar());
-                        }
-                    });
+                    int diff = storage.getCarsStorageCapacity() - storage.getCarsStorage().size() - workers.getTaskCount();
 
-                    System.out.println("Car storage : " + storage.getCarsStorage().size() + "\\" + storage.getCarsStorageCapacity());
-                    storage.getCarsStorage().notify();
-                }
+                    for (int i = 0; i < diff; i++) {
+                        workers.execute(() -> {
+                            synchronized (storage.getCarsStorage()) {
+                                Worker worker = new Worker(storage, ui, workers.getOrderNumber((int) Thread.currentThread().getId()));
+                                storage.getCarsStorage().add(worker.makeCar());
+                                storage.getCarsStorage().notify();
 
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                                notifyObserver(operation.carsCount, storage.getCarsStorage().size(), 0);
+                            }
+                        });
+                    }
                 }
             }
         });

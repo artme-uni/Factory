@@ -1,10 +1,9 @@
 package ru.nsu.g.akononov.factory.factory;
 
-import ru.nsu.g.akononov.factory.car.Accessory;
-import ru.nsu.g.akononov.factory.car.Body;
-import ru.nsu.g.akononov.factory.car.Car;
-import ru.nsu.g.akononov.factory.car.Engine;
-import ru.nsu.g.akononov.factory.threadPool.ThreadPool;
+import ru.nsu.g.akononov.factory.factory.car.Accessory;
+import ru.nsu.g.akononov.factory.factory.car.Body;
+import ru.nsu.g.akononov.factory.factory.car.Car;
+import ru.nsu.g.akononov.factory.factory.car.Engine;
 
 import java.util.LinkedList;
 

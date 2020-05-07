@@ -1,8 +1,10 @@
 package ru.nsu.g.akononov.factory.factory;
 
-import ru.nsu.g.akononov.factory.car.Accessory;
-import ru.nsu.g.akononov.factory.car.Body;
-import ru.nsu.g.akononov.factory.car.Engine;
+import ru.nsu.g.akononov.factory.factory.car.Accessory;
+import ru.nsu.g.akononov.factory.factory.car.Body;
+import ru.nsu.g.akononov.factory.factory.car.Engine;
+import ru.nsu.g.akononov.factory.factory.maketing.DetailSupplier;
+import ru.nsu.g.akononov.factory.factory.observable.Observer;
 
 import java.util.LinkedList;
 
@@ -25,6 +27,16 @@ public class Suppliers {
         this.accessoriesSuppliersCount = accessoriesSuppliersCount;
 
         startWork();
+    }
+
+    public void registerObserver(Observer observer)
+    {
+        bodySupplier.registerObserver(observer);
+        engineSupplier.registerObserver(observer);
+        for (var accessorySupplier : accessorySuppliers)
+        {
+            accessorySupplier.registerObserver(observer);
+        }
     }
 
     private void startWork()
