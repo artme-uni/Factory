@@ -10,13 +10,13 @@ import java.util.LinkedList;
 public class Dealers {
     private final LinkedList<CarDealer> dealers;
 
-    public Dealers(int dealersCount, LinkedList<Car> storage)
+    public Dealers(int dealersCount, LinkedList<Car> storage, SalesLogger logger, int delay)
     {
         dealers = new LinkedList<>();
-        SalesLogger salesLogger = new SalesLogger();
+        SalesLogger salesLogger = logger;
 
         for (int i = 0; i < dealersCount; i++) {
-            dealers.add(new CarDealer(storage, salesLogger.getLogger()));
+            dealers.add(new CarDealer(storage, salesLogger.getLogger(), delay));
         }
     }
 

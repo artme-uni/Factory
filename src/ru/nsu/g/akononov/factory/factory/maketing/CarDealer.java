@@ -11,9 +11,10 @@ public class CarDealer extends Observable {
 
     private final Thread thread;
     private final Logger logger;
-    private static int soldCarsCount;
+    private static int soldCarsCount = 0;
+    private static final Object countLock = new Object();
 
-    public CarDealer(LinkedList<Car> storage, Logger logger) {
+    public CarDealer(LinkedList<Car> storage, Logger logger, int delay) {
         this.logger = logger;
 
         this.thread = new Thread(() -> {
@@ -30,15 +31,18 @@ public class CarDealer extends Observable {
                     Car car = storage.poll();
 
                     notifyObserver(operation.carsCount, storage.size(), 0);
-                    soldCarsCount++;
-                    notifyObserver(operation.soldCarsCount, soldCarsCount, 0);
+
+                    synchronized (countLock) {
+                        soldCarsCount++;
+                        notifyObserver(operation.soldCarsCount, soldCarsCount, 0);
+                    }
 
                     logger.info(car.toString());
                     storage.notify();
                 }
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(delay);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

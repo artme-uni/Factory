@@ -15,13 +15,14 @@ public class Suppliers {
     LinkedList<DetailSupplier<Accessory>> accessorySuppliers = new LinkedList<>();
     final private int accessoriesSuppliersCount;
 
-    public Suppliers(Storage storage, int accessoriesSuppliersCount)
+    public Suppliers(Storage storage, int accessoriesSuppliersCount, int bodyDelay, int engineDelay, int accessoryDelay)
     {
-        bodySupplier = new DetailSupplier<>(storage.getBodiesStorageCapacity(), storage.getBodiesStorage(), Body::new);
-        engineSupplier = new DetailSupplier<>(storage.getEnginesStorageCapacity(), storage.getEnginesStorage(), Engine::new);
+        bodySupplier = new DetailSupplier<>(storage.getBodiesStorageCapacity(), storage.getBodiesStorage(), Body::new, bodyDelay);
+        engineSupplier = new DetailSupplier<>(storage.getEnginesStorageCapacity(), storage.getEnginesStorage(), Engine::new, engineDelay);
 
         for (int i = 0; i < accessoriesSuppliersCount; i++) {
-            accessorySuppliers.add(new DetailSupplier<>(storage.getAccessoriesStorageCapacity(), storage.getAccessoriesStorage(), Accessory::new));
+            accessorySuppliers.add(new DetailSupplier<>(storage.getAccessoriesStorageCapacity(),
+                    storage.getAccessoriesStorage(), Accessory::new, accessoryDelay));
         }
 
         this.accessoriesSuppliersCount = accessoriesSuppliersCount;

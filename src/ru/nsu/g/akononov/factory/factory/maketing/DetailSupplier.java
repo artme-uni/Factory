@@ -12,7 +12,7 @@ public class DetailSupplier<T extends Detail> extends Observable {
 
     private final Thread thread;
 
-    public DetailSupplier(int storageCapacity, LinkedList<T> storage, Supplier<T> supplier) {
+    public DetailSupplier(int storageCapacity, LinkedList<T> storage, Supplier<T> supplier, int delay) {
 
         this.thread = new Thread(() -> {
             while (true) {
@@ -33,7 +33,7 @@ public class DetailSupplier<T extends Detail> extends Observable {
                 }
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(delay);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

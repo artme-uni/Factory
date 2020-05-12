@@ -9,8 +9,15 @@ public class SalesLogger {
 
     private static Logger logger = Logger.getLogger(CarDealer.class.getName());
 
-    public SalesLogger() {
-        setLoggerPreferences();
+    public SalesLogger(boolean isLogging) {
+        logger.setUseParentHandlers(false);
+
+        ConsoleHandler consoleHandler = new ConsoleHandler();
+        consoleHandler.setLevel(Level.OFF);
+        logger.addHandler(consoleHandler);
+
+        if (isLogging)
+            setLoggerPreferences();
     }
 
     private void setLoggerPreferences() {
@@ -32,15 +39,9 @@ public class SalesLogger {
         };
 
         try {
-            logger.setUseParentHandlers(false);
-
             FileHandler handler = new FileHandler("salesLog.txt");
             handler.setFormatter(formatter);
             logger.addHandler(handler);
-
-            ConsoleHandler consoleHandler = new ConsoleHandler();
-            consoleHandler.setLevel(Level.WARNING);
-            logger.addHandler(consoleHandler);
 
         } catch (IOException e) {
             e.printStackTrace();

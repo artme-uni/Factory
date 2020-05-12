@@ -48,11 +48,13 @@ public abstract class Observable {
                 for (Observer observer : observers) {
                     observer.updateCarsCount(argument);
                 }
+                break;
             }
             case soldCarsCount: {
                 for (Observer observer : observers) {
                     observer.updateSoldCarsCount(argument);
                 }
+                break;
             }
         }
     }
