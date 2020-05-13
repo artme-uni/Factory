@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import ru.nsu.g.akononov.factory.components.car.*;
 
+import static java.lang.Thread.sleep;
 import static org.junit.Assert.*;
 
 public class ThreadPoolTest {
@@ -16,6 +17,12 @@ public class ThreadPoolTest {
             threadPool.execute(() -> {
                 Car car = new Car(new Body(), new Engine(), new Accessory());
             });
+        }
+
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         assertEquals("Car:6(Body:6,Engine:6,Accessory:6)", new Car(new Body(), new Engine(), new Accessory()).toString());
