@@ -19,6 +19,24 @@ public class Factory {
         start(i);
     }
 
+    public void setBodySupplierDelay(int delay) {
+        suppliers.bodySupplier.setDelay(delay);
+    }
+
+    public void setEngineSupplierDelay(int delay) {
+        suppliers.engineSupplier.setDelay(delay);
+    }
+
+    public void setDealersDelay(int delay) {
+        dealers.setDelay(delay);
+    }
+
+    public void setAccessoriesSuppliersDelay(int delay) {
+        for (var supplier : suppliers.accessorySuppliers) {
+            supplier.setDelay(delay);
+        }
+    }
+
     private void start(InputValues i) {
         System.out.println("Factory is executed!");
         Storage storage = new Storage(i.bodiesStorageCapacity, i.engineStorageCapacity, i.accessoriesStorageCapacity, i.carsStorageCapacity);
@@ -28,7 +46,7 @@ public class Factory {
         SalesLogger logger = new SalesLogger(i.isLogging);
         dealers = new Dealers(i.dealersCount, storage.getCarsStorage(), logger, i.dealerDelay);
 
-        GUI ui = new GUI(storage, i.workersCount, this);
+        GUI ui = new GUI(storage, i.workersCount, this, i);
 
         manager = new Manager(workers, storage, ui);
 

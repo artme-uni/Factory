@@ -10,9 +10,13 @@ import java.util.function.Supplier;
 public class DetailSupplier<T extends Detail> extends Observable {
 
     private final Thread thread;
+    
+    private int delay;
 
     public DetailSupplier(int storageCapacity, LinkedList<T> storage, Supplier<T> supplier, int delay) {
-
+        
+        this.delay = delay;
+        
         this.thread = new Thread(() -> {
             outer : while (true) {
                 synchronized (storage) {
@@ -33,7 +37,7 @@ public class DetailSupplier<T extends Detail> extends Observable {
                 }
 
                 try {
-                    Thread.sleep(delay);
+                    Thread.sleep(this.delay);
                 } catch (InterruptedException e) {
                     //System.out.println("Supplier " + Thread.currentThread().getId() + " go sleep");
                     break;
@@ -42,6 +46,10 @@ public class DetailSupplier<T extends Detail> extends Observable {
         });
     }
 
+    public void setDelay(int delay)
+    {
+        this.delay = delay;
+    }
 
     public void start() {
         thread.start();

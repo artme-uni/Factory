@@ -10,9 +10,9 @@ import java.util.LinkedList;
 
 public class Suppliers {
 
-    final private DetailSupplier<Body> bodySupplier;
-    final private DetailSupplier<Engine> engineSupplier;
-    LinkedList<DetailSupplier<Accessory>> accessorySuppliers = new LinkedList<>();
+    final public DetailSupplier<Body> bodySupplier;
+    final public DetailSupplier<Engine> engineSupplier;
+    final public LinkedList<DetailSupplier<Accessory>> accessorySuppliers = new LinkedList<>();
     final private int accessoriesSuppliersCount;
 
     public Suppliers(Storage storage, int accessoriesSuppliersCount, int bodyDelay, int engineDelay, int accessoryDelay)

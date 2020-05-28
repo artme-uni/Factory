@@ -20,6 +20,12 @@ public class Dealers {
         }
     }
 
+    public void setDelay(int delay)
+    {
+        for(var dealer : dealers)
+            dealer.setDelay(delay);
+    }
+
     public void registerObserver(Observer observer)
     {
         for (var dealer : dealers)

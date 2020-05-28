@@ -14,8 +14,11 @@ public class CarDealer extends Observable {
     private static int soldCarsCount = 0;
     private static final Object countLock = new Object();
 
+    private int delay;
+
     public CarDealer(LinkedList<Car> storage, Logger logger, int delay) {
         this.logger = logger;
+        this.delay = delay;
 
         this.thread = new Thread(() -> {
             outer: while (true) {
@@ -43,7 +46,7 @@ public class CarDealer extends Observable {
                 }
 
                 try {
-                    Thread.sleep(delay);
+                    Thread.sleep(this.delay);
                 } catch (InterruptedException e) {
                     //System.out.println("Dealer " + Thread.currentThread().getId() + " go sleep");
                     break;
@@ -52,6 +55,11 @@ public class CarDealer extends Observable {
         });
 
         start();
+    }
+
+    public void setDelay(int delay)
+    {
+        this.delay = delay;
     }
 
     private void start() {
